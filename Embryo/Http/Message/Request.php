@@ -150,10 +150,10 @@
          */
         public function withUri(UriInterface $uri, $preserveHost = false)
         {
-            $host = $this->uri->getHost();
             $clone = clone $this;
             $clone->uri = $uri;
-            
+            $host = $uri->getHost();
+
             if (!$preserveHost) {
                 $clone->headers['host'] = $this->setNotPreserveHost($host);
             } else {
