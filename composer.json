@@ -1,14 +1,13 @@
 {
     "name": "davidecesarano/embryo-http",
     "type": "library",
-    "description": "A PSR-7 and PSR-17 implementation for representing HTTP messages.",
+    "description": "A PSR-7 and PSR-17 implementation for HTTP messages and factory.",
     "keywords": [
-        "http messages",
-        "request",
-        "response",
-        "uri",
+        "php",
         "psr-7",
-        "psr-17"
+        "psr-17",
+        "http-message",
+        "http-factory"
     ],
     "homepage": "https://github.com/davidecesarano/embryo-http",
     "license": "MIT",
