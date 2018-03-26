@@ -34,25 +34,24 @@
         }
 
         /**
-         * Creates a new server-side request from gloablas variables.
+         * Creates a new server-side request from $_SERVER.
          *
-         * @param array $globals
+         * @param array $server
          * @return ServerRequestInterface
          * @throws InvalidArgumentException
          */
-        public function createServerRequestFromArray(array $globals): ServerRequestInterface
+        public function createServerRequestFromArray(array $server): ServerRequestInterface
         {
-            $method  = $globals['server']['REQUEST_METHOD'];
+            $method  = $server['REQUEST_METHOD'];
             if (!is_string($method)) {
                 throw new InvalidArgumentException('Request method must be a string');
             }
 
-            $uri     = (new UriFactory)->createUriFromArray($globals['server']);
-            $server  = $globals['server'];
-            $cookies = $globals['cookie']; 
-            $query   = $globals['query'];
-            $files   = (new UploadedFileFactory)->createUploadedFileFromArray($globals['files']);
-            $post    = $globals['post'];
+            $uri     = (new UriFactory)->createUriFromArray($server);
+            $cookies = $_COOKIE; 
+            $query   = $_GET;
+            $files   = (new UploadedFileFactory)->createUploadedFileFromArray($_FILES);
+            $post    = $_POST;
 
             $request = new ServerRequest($method, $uri, $server);
             $request = $request->withCookieParams($cookies);
