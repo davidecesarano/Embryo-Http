@@ -85,7 +85,7 @@
          */
         public function __toString()
         {
-            if (is_resource($stream) === false) {
+            if (is_resource($this->stream) === false) {
                 return '';
             }
 
