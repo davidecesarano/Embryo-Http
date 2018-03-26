@@ -75,7 +75,7 @@
          * Sets Host header if preserve host is false.
          * 
          * @param string $host 
-         * return string[][]
+         * @return string[][]
          */
         protected function setNotPreserveHost($host)
         {

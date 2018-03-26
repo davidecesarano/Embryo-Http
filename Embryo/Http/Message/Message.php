@@ -4,8 +4,7 @@
      * Message
      * 
      * PSR-7 HTTP messages consist of requests from a client to a server and responses
-     * from a server to a client. This interface defines the methods common to
-     * each.
+     * from a server to a client.
      * 
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http
@@ -248,5 +247,4 @@
             $clone->body = $body;
             return $clone;
         }
-    
     }

@@ -3,7 +3,7 @@
     /**
      * Stream
      *
-     * PSR-7 that describes a data stream.
+     * PSR-7 implementation that describes a data stream.
      * 
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http 
@@ -126,7 +126,7 @@
         }
         
         /**
-         * Get the size of the stream if known.
+         * Gets the size of the stream if known.
          *
          * @link http://php.net/manual/en/function.fstat.php
          * @return int|null
@@ -218,7 +218,7 @@
         }
         
         /**
-         * Write data to the stream.
+         * Writes data to the stream.
          *
          * @param string $string
          * @return int
@@ -246,7 +246,7 @@
         }
         
         /**
-         * Read data from the stream.
+         * Reads data from the stream.
          *
          * @link http://php.net/manual/en/function.fread.php
          * @param int $length
@@ -279,7 +279,7 @@
         }
         
         /**
-         * Get stream metadata as an associative array or retrieve a specific key.
+         * Gets stream metadata as an associative array or retrieve a specific key.
          *
          * The keys returned are identical to the keys returned from PHP's
          * stream_get_meta_data() function.

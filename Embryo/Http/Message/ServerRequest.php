@@ -3,7 +3,7 @@
     /**
      * ServerRequest
      * 
-     * PSR-7 representation of an incoming, server-side HTTP request.
+     * PSR-7 implementation of an incoming, server-side HTTP request.
      * 
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http 
@@ -158,13 +158,21 @@
          * ------------------------------------------------------------
          */
         
+        /**
+         * Retrieves normalized file upload data.
+         *
+         * This method returns upload metadata in a normalized tree, with each leaf
+         * an instance of Psr\Http\Message\UploadedFileInterface.
+         *
+         * @return array
+         */
         public function getUploadedFiles()
         {
             return $this->uploadedFiles;
         }
         
         /**
-         * Restituisce un'istanza con file specifici
+         * Creates a new instance with the specified uploaded files.
          *
          * @param array $uploadedFiles
          * @return static

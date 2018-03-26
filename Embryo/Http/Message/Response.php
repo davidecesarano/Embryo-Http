@@ -3,7 +3,7 @@
     /**
      * Response
      * 
-     * PSR-7 representation of an outgoing, server-side response.
+     * PSR-7 implementation of an outgoing, server-side response.
      * 
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http 
@@ -59,7 +59,7 @@
         }
         
         /**
-         * Return an instance with the specified status code and, optionally, reason phrase.
+         * Returns an instance with the specified status code and, optionally, reason phrase.
          *
          * @param int $code 
          * @param string $reasonPhrase

@@ -3,7 +3,7 @@
     /**
      * Uri
      * 
-     * PSR-7 representation a URI.
+     * PSR-7 implementation for creating a URI.
      *
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http 
@@ -167,7 +167,7 @@
         }
 
         /**
-         * Return an instance with the specified user information.
+         * Returns an instance with the specified user information.
          * 
          * @param string $user 
          * @param null|string $password 
@@ -268,7 +268,7 @@
          */
 
         /** 
-         * Retrieve the path component of the URI.
+         * Retrieves the path component of the URI.
          *
          * This method returns "/" string if path is empty.
          *
@@ -314,7 +314,7 @@
         }
 
         /**
-         * Restituisce un'istanza con query string specifica
+         * Returns an instance with the specified query string.
          * 
          * If no query string is present, this method returns an empty string.
          * The leading "?" character is not part of the query and must not be

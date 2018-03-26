@@ -3,7 +3,7 @@
     /**
      * Request
      * 
-     * PSR-7 representation of an outgoing, client-side request.
+     * PSR-7 implementation of an outgoing, client-side request.
      *
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http
