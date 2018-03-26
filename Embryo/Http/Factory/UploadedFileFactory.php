@@ -30,25 +30,33 @@
          * the file.
          * 
          * @param string|resource $file
-         * @param int $size
+         * @param int|null $size
          * @param int $error
-         * @param string $clientFilename
-         * @param string $clientMediaType
+         * @param string|null $clientFilename
+         * @param string|null $clientMediaType
          * @return UploadedFileInterface
          * @throws InvalidArgumentException
          */
         public function createUploadedFile($file, $size = null, $error = \UPLOAD_ERR_OK, $clientFilename = null, $clientMediaType = null): UploadedFileInterface
         {
+            if (!is_string($file) && !is_resource($file)) {
+                throw new InvalidArgumentException('File must be a string or resource');
+            }
+
             if (is_string($file)) {
-                $file = (new StreamFactory)->createStream($file);
+                $resource = (new StreamFactory)->createStreamFromFile($file, 'r');
             }
 
-            if (!$file->isWritable()) {
-                throw new InvalidArgumentException('Temporany resource must be writable');
+            if (is_resource($file)) {
+                $resource = (new StreamFactory)->createStreamFromResource($file);
             }
 
-            $size = (is_null($size)) ? $file->getSize() : $size;
-            return new UploadedFile($file, $size, $error, $clientFilename, $clientMediaType);
+            if (!$resource->isReadable()) {
+                throw new InvalidArgumentException('Temporany resource must be readable');
+            }
+
+            $size = (is_null($size)) ? $resource->getSize() : $size;
+            return new UploadedFile($file, $size, $error, $clientFilename, $clientMediaType); 
         }
 
         /**
