@@ -41,7 +41,7 @@
          */
         public function createStreamFromFile($filename, $mode = 'r'): StreamInterface
         {
-            $resource = fopen($file, $mode);
+            $resource = fopen($filename, $mode);
             return $this->createStreamFromResource($resource);
         }
 
