@@ -3,7 +3,11 @@
     /**
      * UriFactory
      * 
+<<<<<<< HEAD
      * PSR-17 factory for creating a new URI.
+=======
+     * PSR-17 factory for creating new URI.
+>>>>>>> origin/master
      * 
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http
@@ -56,7 +60,11 @@
             // query
             $query = (isset($server['QUERY_STRING'])) ? $server['QUERY_STRING'] : '';
 
+<<<<<<< HEAD
             // fragment (not available in $_SERVER)
+=======
+            // fragment
+>>>>>>> origin/master
             $fragment = '';
 
             $uri = new Uri('');

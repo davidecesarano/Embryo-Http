@@ -46,7 +46,11 @@
         }
 
         /**
+<<<<<<< HEAD
          * Creates a new stream from an existing resource.
+=======
+         * Create a new stream from an existing resource.
+>>>>>>> origin/master
          *
          * @param resource $resource
          * @return StreamInterface
