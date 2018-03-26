@@ -3,11 +3,7 @@
     /**
      * UploadedFile 
      * 
-<<<<<<< HEAD
      * PSR-7 implementation a file uploaded through an HTTP request.
-=======
-     * PSR-7 representation a file uploaded through an HTTP request.
->>>>>>> origin/master
      * 
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http 
