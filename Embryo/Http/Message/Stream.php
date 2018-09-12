@@ -19,39 +19,39 @@
     class Stream implements StreamInterface 
     {        
         /**
-         * @var resource
+         * @var resource $strem
          */
-        protected $stream;
+        private $stream;
         
         /**
-         * @var null|int
+         * @var null|int $size
          */
-        protected $size;
+        private $size;
         
         /**
-         * @var array
+         * @var array $metadata
          */
-        protected $metadata;
+        private $metadata;
         
         /**
-         * @var null|int
+         * @var bool $seekable
          */
-        protected $seekable;
+        private $seekable;
 
         /**
-         * @var null|int
+         * @var bool $readable
          */
-        protected $readable;
+        private $readable;
         
         /**
-         * @var null|int
+         * @var bool $writable
          */
-        protected $writable;
+        private $writable;
         
         /**
-         * @var array
+         * @var array $modes
          */
-        protected static $modes = [
+        private static $modes = [
             'readable' => ['r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'],
             'writable' => ['w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b', 'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+']
         ];
@@ -68,7 +68,6 @@
                 throw new InvalidArgumentException('Stream must be a resource');
             } else {
 
-                $this->detach();
                 $this->stream   = $stream;
                 $this->metadata = stream_get_meta_data($stream);
                 $this->seekable = $this->metadata['seekable'];
@@ -102,7 +101,7 @@
          */
         public function close()
         {
-            if (is_resource($stream) === true) {
+            if (is_resource($this->stream) === true) {
                 fclose($this->stream);
             }
             $this->detach();
@@ -190,7 +189,7 @@
         public function seek($offset, $whence = SEEK_SET)
         {
             if (!$this->isSeekable() || fseek($this->stream, $offset, $whence) === -1) {
-                throw new RuntimeException('Stream is not seekable');
+                throw new RuntimeException('Could not seek in stream');
             }
         }
         
@@ -228,7 +227,7 @@
         {   
             $written = fwrite($this->stream, $string);
             if (!$this->isWritable() || $written === false) {
-                throw new RuntimeException('Cannot read from non-readable stream');
+                throw new RuntimeException('Cannot write to a non-writable stream');
             }
             
             $this->size = null;
