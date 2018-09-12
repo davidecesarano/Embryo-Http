@@ -13,9 +13,7 @@
     namespace Embryo\Http\Message;
 
     use Embryo\Http\Factory\StreamFactory;
-    use InvalidArgumentException;
     use Psr\Http\Message\{StreamInterface, UploadedFileInterface};
-    use RuntimeException;
 
     class UploadedFile implements UploadedFileInterface
     {
@@ -52,19 +50,21 @@
         /**
          * Creates a new UploadedFile instance.
          * 
-         * @param resource|string $file 
+         * @param StreamInterface $file 
          * @param int|null $size 
          * @param int $error 
          * @param string|null $clientFilename 
          * @param string|null $clientMediaType
          */
-        public function __construct($file, $size = null, $error = \UPLOAD_ERR_OK, $clientFilename = null, $clientMediaType = null)
+        public function __construct(
+            StreamInterface $file, 
+            int $size = null, 
+            int $error = \UPLOAD_ERR_OK, 
+            string $clientFilename = null, 
+            string $clientMediaType = null
+        )
         {
-            if (!is_string($file) && !is_resource($file)) {
-                throw new InvalidArgumentException('File must be a string or resource');
-            }
-
-            $this->file            = is_string($file) ? $file : (new StreamFactory)->createStreamFromResource($file);  
+            $this->file            = $file;  
             $this->size            = $size;
             $this->error           = $error; 
             $this->clientFilename  = $clientFilename;
@@ -84,12 +84,9 @@
         public function getStream(): StreamInterface
         {
             if ($this->moved) {
-                throw new RuntimeException(sprintf('Uploaded file %1s has already been moved', $this->clientFilename));
+                throw new \RuntimeException(sprintf('Uploaded file %1s has already been moved', $this->clientFilename));
             }
-
-            $file = (is_string($this->file)) ? $this->file : $this->file->getMetadata('uri');
-            $stream = (new StreamFactory)->createStreamFromFile($file, 'r');
-            return $stream;
+            return $this->file;
         }
 
         /**
@@ -104,47 +101,26 @@
         public function moveTo($targetPath)
         {
             if ($this->moved) {
-                throw new RuntimeException('Uploaded file already moved');
+                throw new \RuntimeException('Uploaded file already moved');
             }
 
             if (!is_string($targetPath) || $targetPath === '') {
-                throw new InvalidArgumentException('Target path must be a non empty string');
+                throw new \InvalidArgumentException('Target path must be a non empty string');
             }
 
             if (!is_writable(dirname($targetPath))) {
-                throw new InvalidArgumentException('Target path is not writable');
+                throw new \InvalidArgumentException('Target path is not writable');
             }
-            
-            if (is_string($this->file)) {
 
-                if (php_sapi_name() == 'cli') {
-                    
-                    if (!rename($this->file, $targetPath)) {
-                        throw new RuntimeException(sprintf('Error moving uploaded file %1s to %2s', $this->clientFilename, $targetPath));
-                    }
-                    $this->moved = true;
-
-                } else {
-                    
-                    if (!move_uploaded_file($this->file, $targetPath)) {
-                        throw new RuntimeException(sprintf('Error moving uploaded file %1s to %2s', $this->clientFilename, $targetPath));
-                    }
-                    $this->moved = true;
-
-                }
-
-            } else {
-
-                $file = $this->file->getMetadata('uri');
-                if (!copy($file, $targetPath)) {
-                    throw new RuntimeException(sprintf('Error moving uploaded file %1s to %2s', $this->clientFilename, $targetPath));
-                }
-                $this->moved = true;
-
+            $stream = $this->getStream();
+            $file   = $stream->getMetadata('uri');
+            if (!copy($file, $targetPath.$this->clientFilename)) {
+                throw new \RuntimeException(sprintf('Error coping uploaded file %1s to %2s', $this->clientFilename, $targetPath));
             }
+            $this->moved = true;
 
             if (!$this->moved) {
-                throw new RuntimeException(sprintf('Uploaded file could not be moved to %s', $targetPath));
+                throw new \RuntimeException(sprintf('Uploaded file could not be moved to %s', $targetPath));
             }
         }
 

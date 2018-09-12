@@ -7,7 +7,7 @@
      * 
      * @author Davide Cesarano <davide.cesarano@unipegaso.it>
      * @link   https://github.com/davidecesarano/embryo-http 
-     * @see    https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php
+     * @see    https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-17-http-factory.md
      */
 
     namespace Embryo\Http\Message;

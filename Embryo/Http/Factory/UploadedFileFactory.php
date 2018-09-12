@@ -14,9 +14,7 @@
 
     use Embryo\Http\Factory\StreamFactory;
     use Embryo\Http\Message\UploadedFile;
-    use Interop\Http\Factory\UploadedFileFactoryInterface;
-    use InvalidArgumentException;
-    use Psr\Http\Message\UploadedFileInterface;
+    use Psr\Http\Message\{StreamInterface, UploadedFileFactoryInterface, UploadedFileInterface};
 
     class UploadedFileFactory implements UploadedFileFactoryInterface
     {
@@ -29,7 +27,7 @@
          * If a size is not provided it will be determined by checking the size of
          * the file.
          * 
-         * @param string|resource $file
+         * @param StreamInterface $file
          * @param int|null $size
          * @param int $error
          * @param string|null $clientFilename
@@ -37,42 +35,35 @@
          * @return UploadedFileInterface
          * @throws InvalidArgumentException
          */
-        public function createUploadedFile($file, $size = null, $error = \UPLOAD_ERR_OK, $clientFilename = null, $clientMediaType = null): UploadedFileInterface
+        public function createUploadedFile(
+            StreamInterface $file, 
+            int $size = null, 
+            int $error = \UPLOAD_ERR_OK, 
+            string $clientFilename = null, 
+            string $clientMediaType = null
+        ): UploadedFileInterface
         {
-            if (!is_string($file) && !is_resource($file)) {
-                throw new InvalidArgumentException('File must be a string or resource');
+            if (!$file->isReadable()) {
+                throw new \InvalidArgumentException('Temporany resource must be readable');
             }
-
-            if (is_string($file)) {
-                $resource = (new StreamFactory)->createStreamFromFile($file, 'r');
-            }
-
-            if (is_resource($file)) {
-                $resource = (new StreamFactory)->createStreamFromResource($file);
-            }
-
-            if (!$resource->isReadable()) {
-                throw new InvalidArgumentException('Temporany resource must be readable');
-            }
-
-            $size = (is_null($size)) ? $resource->getSize() : $size;
+            $size = (is_null($size)) ? $file->getSize() : $size;
             return new UploadedFile($file, $size, $error, $clientFilename, $clientMediaType); 
         }
 
         /**
-         * Creates a new uploaded file from array.
+         * Creates a new uploaded file from server.
          * 
          * @param array $files
          * @return array
          */
-        public function createUploadedFileFromArray(array $files)
+        public function createUploadedFileFromServer(array $files)
         {
             $normalized = [];
             foreach ($files as $key => $value) {
                 
                 if (!isset($value['error'])) {
                     if (is_array($value)) {
-                        $normalized[$key] = $this->createUploadedFileFromArray($value);
+                        $normalized[$key] = $this->createUploadedFileFromServer($value);
                     }
                     continue;
                 }
@@ -80,8 +71,9 @@
                 $normalized[$key] = [];
                 if (!is_array($value['error'])) {
 
+                    $stream = (new StreamFactory)->createStreamFromFile($value['tmp_name'], 'r');
                     $normalized[$key] = $this->createUploadedFile(
-                        $value['tmp_name'],
+                        $stream,
                         $value['size'],
                         $value['error'],
                         $value['name'],
@@ -99,7 +91,7 @@
                         $sub[$id]['error']    = $value['error'][$id];
                         $sub[$id]['size']     = $value['size'][$id];
                         
-                        $normalized[$key] = $this->createUploadedFileFromArray($sub);
+                        $normalized[$key] = $this->createUploadedFileFromServer($sub);
                     
                     }
 

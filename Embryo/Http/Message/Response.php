@@ -15,9 +15,7 @@
     use Embryo\Http\Factory\StreamFactory;
     use Embryo\Http\Message\{Headers, Message};
     use Embryo\Http\Message\Traits\ResponseTrait;
-    use InvalidArgumentException;
     use Psr\Http\Message\{ResponseInterface, StreamInterface};
-    use RuntimeException;
     
     class Response extends Message implements ResponseInterface 
     {
@@ -37,15 +35,16 @@
          * Creates new HTTP response.
          * 
          * @param int $code 
+         * @param string $reasonPhrase
          * @param array $headers 
          * @param StreamInterface $body
          */
-        public function __construct($status = 200, array $headers = [], StreamInterface $body = null)
+        public function __construct(int $status = 200, string $reasonPhrase = '', array $headers = [], StreamInterface $body = null)
         {
             $this->status       = $this->filterStatus($status);
             $this->headers      = $this->setHeaders($headers);
             $this->body         = $body ? $body : (new StreamFactory)->createStream('');
-            $this->reasonPhrase = $this->filterReasonPhrase($status, '');
+            $this->reasonPhrase = $this->filterReasonPhrase($status, $reasonPhrase);
         }
         
         /**
@@ -61,7 +60,7 @@
         /**
          * Returns an instance with the specified status code and, optionally, reason phrase.
          *
-         * @param int $code 
+         * @param int $status 
          * @param string $reasonPhrase
          * @return static
          * @throws InvalidArgumentException

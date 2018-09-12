@@ -12,11 +12,9 @@
 
     namespace Embryo\Http\Factory;
 
-    use InvalidArgumentException;
     use Embryo\Http\Message\ServerRequest;
     use Embryo\Http\Factory\{UploadedFileFactory, UriFactory};
-    use Psr\Http\Message\ServerRequestInterface;
-    use Interop\Http\Factory\ServerRequestFactoryInterface;
+    use Psr\Http\Message\{ServerRequestFactoryInterface, ServerRequestInterface};
 
     class ServerRequestFactory implements ServerRequestFactoryInterface
     {
@@ -25,34 +23,40 @@
          *
          * @param string $method
          * @param UriInterface|string $uri
+         * @param array $serverParams
          * @return ServerRequestInterface
          */
-        public function createServerRequest($method, $uri): ServerRequestInterface
+        public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
         {
             $uri = (is_string($uri)) ? (new UriFactory)->createUri($uri) : $uri;
-            return new ServerRequest($method, $uri);
+            return new ServerRequest($method, $uri, $serverParams);
         }
 
         /**
-         * Creates a new server-side request from $_SERVER.
+         * Creates a new server-side request from server.
          *
          * @param array $server
+         * @param array $get
+         * @param array $post
+         * @param array $cookie
+         * @param array $files
          * @return ServerRequestInterface
-         * @throws InvalidArgumentException
          */
-        public function createServerRequestFromArray(array $server): ServerRequestInterface
+        public function createServerRequestFromServer(
+            array $server, 
+            array $get, 
+            array $post, 
+            array $cookie, 
+            array $files
+        ): ServerRequestInterface
         {
             $method  = $server['REQUEST_METHOD'];
-            if (!is_string($method)) {
-                throw new InvalidArgumentException('Request method must be a string');
-            }
-
-            $uri     = (new UriFactory)->createUriFromArray($server);
-            $cookies = $_COOKIE; 
-            $query   = $_GET;
-            $files   = (new UploadedFileFactory)->createUploadedFileFromArray($_FILES);
-            $post    = $_POST;
-
+            $uri     = (new UriFactory)->createUriFromServer($server);
+            $query   = $get;
+            $post    = $post;
+            $cookies = $cookie; 
+            $files   = (new UploadedFileFactory)->createUploadedFileFromServer($files);
+            
             $request = new ServerRequest($method, $uri, $server);
             $request = $request->withCookieParams($cookies);
             $request = $request->withQueryParams($query);

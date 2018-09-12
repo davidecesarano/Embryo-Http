@@ -13,8 +13,7 @@
     namespace Embryo\Http\Factory;
     
     use Embryo\Http\Message\Response;
-    use Interop\Http\Factory\ResponseFactoryInterface;
-    use Psr\Http\Message\ResponseInterface;
+    use Psr\Http\Message\{ResponseFactoryInterface, ResponseInterface};
 
     class ResponseFactory implements ResponseFactoryInterface
     {
@@ -22,10 +21,11 @@
          * Creates new response.
          *
          * @param int $code
+         * @param string $reasonPhrase
          * @return ResponseInterface
          */
-        public function createResponse($code = 200): ResponseInterface
+        public function createResponse(int $code = 200, string $reasonPhrase = ''): ResponseInterface
         {
-            return new Response($code);
+            return new Response($code, $reasonPhrase);
         }
     }

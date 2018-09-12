@@ -13,9 +13,7 @@
     namespace Embryo\Http\Factory;
 
     use Embryo\Http\Message\Uri;
-    use Interop\Http\Factory\UriFactoryInterface;
-    use InvalidArgumentException;
-    use Psr\Http\Message\UriInterface;
+    use Psr\Http\Message\{UriFactoryInterface, UriInterface};
 
     class UriFactory implements UriFactoryInterface
     {
@@ -26,11 +24,8 @@
          * @return UriInterface
          * @throws InvalidArgumentException
          */
-        public function createUri($uri = ''): UriInterface
+        public function createUri(string $uri = ''): UriInterface
         {
-            if (!is_string($uri)) {
-                throw new InvalidArgumentException('Uri must be a string');
-            }
             return new Uri($uri);
         }
 
@@ -40,7 +35,7 @@
          * @param array $server 
          * @return UriInterface
          */
-        public function createUriFromArray(array $server): UriInterface
+        public function createUriFromServer(array $server): UriInterface
         {
             // scheme, host, post, user, pass
             $scheme = (empty($server['HTTPS']) || $server['HTTPS'] === 'off') ? 'http' : 'https';

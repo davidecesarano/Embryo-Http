@@ -14,8 +14,7 @@
     
     use Embryo\Http\Message\Request;
     use Embryo\Http\Factory\UriFactory;
-    use Interop\Http\Factory\RequestFactoryInterface;
-    use Psr\Http\Message\RequestInterface;
+    use Psr\Http\Message\{RequestFactoryInterface, RequestInterface};
     
     class RequestFactory implements RequestFactoryInterface
     {
@@ -26,7 +25,7 @@
          * @param UriInterface|string $uri
          * @return RequestInterface
          */
-        public function createRequest($method, $uri): RequestInterface
+        public function createRequest(string $method, $uri): RequestInterface
         {
             $uri = (is_string($uri)) ? (new UriFactory)->createUri($uri) : $uri;
             return new Request($method, $uri);
