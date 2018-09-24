@@ -11,53 +11,41 @@
      */
 
     namespace Embryo\Http\Message\Traits;
-
-    use InvalidArgumentException;
     
     trait RequestTrait 
     {
         /**
-         * @var array $validMethods
-         */
-        private $validMethods = [
-            'CONNECT', 
-            'DELETE', 
-            'GET', 
-            'HEAD', 
-            'OPTIONS', 
-            'PATCH', 
-            'POST', 
-            'PUT', 
-            'TRACE'
-        ];
-
-        /**
-         * Validates the HTTP method
+         * Validates the HTTP method.
          * 
          * @param string $method 
          * @return string
          */
-        protected function filterMethod($method)
+        protected function filterMethod(string $method)
         {
-            if (!is_string($method)) {
-                throw new InvalidArgumentException('HTTP request method must be a string');
+            if (!in_array(strtoupper($method), [
+                'CONNECT', 
+                'DELETE', 
+                'GET', 
+                'HEAD', 
+                'OPTIONS', 
+                'PATCH', 
+                'POST', 
+                'PUT', 
+                'TRACE'
+            ])) {
+                throw new \InvalidArgumentException('HTTP request method is not valid');
             }
-
-            if (!in_array(strtoupper($method), $this->validMethods)) {
-                throw new InvalidArgumentException('HTTP request method is not valid');
-            }
-
             return strtoupper($method);
         }
 
         /**
-         * Sets request target
+         * Sets request target.
          * 
          * @param string $path 
          * @param string $query 
          * @return string
          */
-        protected function setRequestTarget($path, $query)
+        protected function setRequestTarget(string $path, string $query)
         {   
             $target = $path;
             if ($target === '') {
