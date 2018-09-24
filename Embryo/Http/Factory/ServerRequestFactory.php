@@ -46,7 +46,7 @@
             $request = $request->withQueryParams($_GET);
             $request = $request->withParsedBody($_POST);
             $request = $request->withCookieParams($_COOKIE);
-            $request = $request->withUploadedFiles($_FILES);
+            $request = $request->withUploadedFiles($files);
             return $request;
         }
     }
