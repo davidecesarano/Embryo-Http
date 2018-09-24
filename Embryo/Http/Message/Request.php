@@ -53,8 +53,8 @@
             $this->method        = $this->filterMethod($method);
             $this->uri           = is_string($uri) ? (new UriFactory)->createUri($uri) : $uri;
             $this->headers       = $this->setHeaders($headers);                
-            $this->body          = (!$body) ? (new StreamFactory)->createStream('') : $body;
-            $this->requestTarget = $this->setRequestTarget($uri->getPath(), $uri->getQuery());
+            $this->body          = $body;
+            $this->requestTarget = $this->setRequestTarget($this->uri->getPath(), $this->uri->getQuery());
 
             // Http Host header
             $this->headers['host'] = $this->setNotPreserveHost($this->getHeaderLine('Host'), $this->uri->getHost());
