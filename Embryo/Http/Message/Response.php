@@ -37,13 +37,13 @@
          * @param int $code 
          * @param string $reasonPhrase
          * @param array $headers 
-         * @param StreamInterface $body
+         * @param StreamInterface|null $body
          */
         public function __construct(int $status = 200, string $reasonPhrase = '', array $headers = [], StreamInterface $body = null)
         {
             $this->status       = $this->filterStatus($status);
             $this->headers      = $this->setHeaders($headers);
-            $this->body         = $body ? $body : (new StreamFactory)->createStream('');
+            $this->body         = $body;
             $this->reasonPhrase = $this->filterReasonPhrase($status, $reasonPhrase);
         }
         
