@@ -43,7 +43,7 @@
          * @param string $key 
          * @return string 
          */
-        protected function setHeaderName($key)
+        protected function setHeaderName(string $key)
         {
             $key = strtr(strtolower($key), '_', '-');
             if (strpos($key, 'http-') === 0) {
@@ -59,7 +59,7 @@
          * @param string $host 
          * return string[][]
          */
-        protected function setPreserveHost($headerHost, $host)
+        protected function setPreserveHost(string $headerHost, string $host)
         {
             $header = [];
             if ($host !== '' && $headerHost === '') {
@@ -77,7 +77,7 @@
          * @param string $host 
          * @return string[][]
          */
-        protected function setNotPreserveHost($host)
+        protected function setNotPreserveHost(string $host)
         {
             $header = [];
             if ($host !== '') {
