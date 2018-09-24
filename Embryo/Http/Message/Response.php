@@ -43,7 +43,7 @@
         {
             $this->status       = $this->filterStatus($status);
             $this->headers      = $this->setHeaders($headers);
-            $this->body         = $body;
+            $this->body         = $body ? $body : (new StreamFactory)->createStream('');
             $this->reasonPhrase = $this->filterReasonPhrase($status, $reasonPhrase);
         }
         
