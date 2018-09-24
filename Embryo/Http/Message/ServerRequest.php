@@ -56,7 +56,7 @@
          */
         public function __construct($method, $uri, array $server = [])
         {
-            $this->serverParams = empty($server) ? $_SERVER : $server;
+            $this->serverParams = $server;
             parent::__construct($method, $uri, $server);
         }
 
