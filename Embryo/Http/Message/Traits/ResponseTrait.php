@@ -15,7 +15,7 @@
     trait ResponseTrait 
     {
         /**
-         * 
+         * Returns valid respone messages.
          * 
          * @return array
          */
