@@ -21,12 +21,12 @@ $request = (new RequestFactory)->createRequest('GET', 'http://example.com');
 // create server request
 $request = (new RequestFactory)->createServerRequest('GET', 'http://example.com');
 
-// create server request from $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
+// create server request from server
 $request = (new RequestFactory)->createServerRequestFromServer();
 ```
 ### Response
 ```php
-$request = (new ResponseFactory)->createResponse(200, '');
+$request = (new ResponseFactory)->createResponse(200);
 ```
 
 ### 
