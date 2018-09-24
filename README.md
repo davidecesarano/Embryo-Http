@@ -29,4 +29,16 @@ $request = (new RequestFactory)->createServerRequestFromServer();
 $request = (new ResponseFactory)->createResponse(200);
 ```
 
-### 
+### Stream
+```php
+// create stream from string
+$stream = (new StreamFactory)->createStream('Hello World!');
+echo $stream; // Hello World!
+
+// create stream from file
+$stream = (new StreamFactory)->createStreamFromFile('/path/file', 'r');
+
+// create stream from resource
+$resource = fopen('php://temp', 'r+');
+$stream = (new StreamFactory)->createStreamFromResource($resource);
+```
