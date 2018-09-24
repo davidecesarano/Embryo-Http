@@ -30,17 +30,24 @@ $request = (new ResponseFactory)->createResponse(200);
 ```
 
 ### Stream
+
+#### Create Stream from a string
 ```php
-// create stream from string
 $stream = (new StreamFactory)->createStream('Hello World!');
 echo $stream; // Hello World!
+```
 
-// create stream from file
+#### Create Stream from a file
+```php
 $stream = (new StreamFactory)->createStreamFromFile('/path/file', 'w+');
 $stream->write('Hello World!);
 echo $stream; // Hello World!
+```
 
-// create stream from resource
-$resource = fopen('php://temp', 'r+');
+#### Create Stream from a resource
+```php
+$resource = fopen('php://temp', 'w+');
 $stream = (new StreamFactory)->createStreamFromResource($resource);
+$stream->write('Hello World!);
+echo $stream; // Hello World!
 ```
