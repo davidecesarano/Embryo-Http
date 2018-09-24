@@ -36,7 +36,9 @@ $stream = (new StreamFactory)->createStream('Hello World!');
 echo $stream; // Hello World!
 
 // create stream from file
-$stream = (new StreamFactory)->createStreamFromFile('/path/file', 'r');
+$stream = (new StreamFactory)->createStreamFromFile('/path/file', 'w+');
+$stream->write('Hello World!);
+echo $stream; // Hello World!
 
 // create stream from resource
 $resource = fopen('php://temp', 'r+');
