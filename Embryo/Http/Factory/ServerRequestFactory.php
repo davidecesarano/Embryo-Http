@@ -28,40 +28,25 @@
          */
         public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
         {
-            $uri = (is_string($uri)) ? (new UriFactory)->createUri($uri) : $uri;
             return new ServerRequest($method, $uri, $serverParams);
         }
 
         /**
          * Creates a new server-side request from server.
          *
-         * @param array $server
-         * @param array $get
-         * @param array $post
-         * @param array $cookie
-         * @param array $files
          * @return ServerRequestInterface
          */
-        public function createServerRequestFromServer(
-            array $server, 
-            array $get, 
-            array $post, 
-            array $cookie, 
-            array $files
-        ): ServerRequestInterface
+        public function createServerRequestFromServer(): ServerRequestInterface
         {
-            $method  = $server['REQUEST_METHOD'];
-            $uri     = (new UriFactory)->createUriFromServer($server);
-            $query   = $get;
-            $post    = $post;
-            $cookies = $cookie; 
-            $files   = (new UploadedFileFactory)->createUploadedFileFromServer($files);
+            $method  = $_SERVER['REQUEST_METHOD'];
+            $uri     = (new UriFactory)->createUriFromServer($_SERVER);
+            $files   = (new UploadedFileFactory)->createUploadedFileFromServer($_FILES);
             
-            $request = new ServerRequest($method, $uri, $server);
-            $request = $request->withCookieParams($cookies);
-            $request = $request->withQueryParams($query);
-            $request = $request->withUploadedFiles($files);
-            $request = $request->withParsedBody($post);
+            $request = $this->createServerRequest($method, $uri, $_SERVER);
+            $request = $request->withQueryParams($_GET);
+            $request = $request->withParsedBody($_POST);
+            $request = $request->withCookieParams($_COOKIE);
+            $request = $request->withUploadedFiles($_FILES);
             return $request;
         }
     }

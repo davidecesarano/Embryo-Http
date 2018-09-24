@@ -27,7 +27,6 @@
          */
         public function createRequest(string $method, $uri): RequestInterface
         {
-            $uri = (is_string($uri)) ? (new UriFactory)->createUri($uri) : $uri;
             return new Request($method, $uri);
         }
     }
