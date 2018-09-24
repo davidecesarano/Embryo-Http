@@ -14,10 +14,10 @@ $ composer require davidecesarano/embryo-http
 ## Usage
 * [Request](#request)
 * [ServerRequest](#serverrequest)
-* Response
-* Stream
-* Uri
-* UploadedFile
+* [Response](#response)
+* [Stream](#stream)
+* [Uri](#uri)
+* [UploadedFile](#uploadedfile)
 ### Request
 ```php
 $request = (new RequestFactory)->createRequest('GET', 'http://example.com');
