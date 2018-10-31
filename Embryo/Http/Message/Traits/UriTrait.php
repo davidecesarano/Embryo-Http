@@ -30,6 +30,21 @@
         }
 
         /**
+         * Remove port from HTTP_HOST
+         * if it's presents.
+         *
+         * @param string $host
+         * @return string
+         */
+        protected function removePortFromHost($host)
+        {
+            if (!is_string($host)) {
+                throw new \InvalidArgumentException('Uri host must be a string');
+            }
+            return preg_replace('#:(\d+){2,4}#', '', $host);
+        }
+
+        /**
          * Validates Uri port.
          * 
          * @param null|int $port

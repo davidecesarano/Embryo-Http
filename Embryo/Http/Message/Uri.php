@@ -26,16 +26,6 @@
         protected $scheme;
         
         /**
-         * @var string $host 
-         */
-        protected $host;
-        
-        /**
-         * @var int $port 
-         */
-        protected $port;
-        
-        /**
          * @param string $user 
          */
         protected $user;
@@ -44,6 +34,16 @@
          * @param string $pass
          */
         protected $pass;
+        
+        /**
+         * @var string $host 
+         */
+        protected $host;
+        
+        /**
+         * @var int $port 
+         */
+        protected $port;
         
         /**
          * @param string $path 
@@ -76,7 +76,7 @@
             $this->scheme   = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
             $this->user     = isset($parts['user']) ? $parts['user'] : '';
             $this->pass     = isset($parts['pass']) ? $parts['pass'] : '';
-            $this->host     = isset($parts['host']) ? $parts['host'] : '';
+            $this->host     = isset($parts['host']) ? $this->removePortFromHost($parts['host']) : '';
             $this->port     = isset($parts['port']) ? $this->filterPort($parts['port']) : null;
             $this->path     = isset($parts['path']) ? $parts['path'] : '/';
             $this->query    = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
@@ -95,7 +95,7 @@
             $path      = '/' . ltrim($this->getPath(), '/');
             $query     = $this->getQuery();
             $fragment  = $this->getFragment();
-            
+
             return ($scheme ? $scheme . ':' : '').($authority ? '//' . $authority : '').$path.($query ? '?' . $query : '').($fragment ? '#' . $fragment : '');
         }
 
@@ -150,6 +150,7 @@
             $userInfo = $this->getUserInfo();
             $host = $this->getHost();
             $port = $this->getPort();
+
             return ($userInfo ? $userInfo . '@' : '') . $host . ($port !== null ? ':' . $port : '');
         }
         
@@ -222,7 +223,7 @@
             }
 
             $clone = clone $this;
-            $clone->host = $host;
+            $clone->host = $this->removePortFromHost($host);
             return $clone;
         }
 
