@@ -51,7 +51,7 @@ echo $stream; // Hello World!
 #### Create Stream from a file
 ```php
 $stream = (new StreamFactory)->createStreamFromFile('/path/file', 'w+');
-$stream->write('Hello World!);
+$stream->write('Hello World!');
 echo $stream; // Hello World!
 ```
 
@@ -59,7 +59,7 @@ echo $stream; // Hello World!
 ```php
 $resource = fopen('php://temp', 'w+');
 $stream = (new StreamFactory)->createStreamFromResource($resource);
-$stream->write('Hello World!);
+$stream->write('Hello World!');
 echo $stream; // Hello World!
 ```
 
