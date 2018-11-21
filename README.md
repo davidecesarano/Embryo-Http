@@ -2,67 +2,64 @@
 A PSR-7 and PSR-17 implementation for HTTP messages and factory. 
 An HTTP message is either a request from a client to a server or a response from a server to a client. An HTTP factory is a method by which a new HTTP object, as defined by PSR-7, is created. 
 
-## Requirements
+# Requirements
 * PHP >= 7.1
 
-## Installation
+# Installation
 Using Composer:
 ```
 $ composer require davidecesarano/embryo-http
 ```
 
-## Usage
-* [Request](#request)
-* [ServerRequest](#serverrequest)
-* [Response](#response)
-* [Stream](#stream)
-* [Uri](#uri)
-* [UploadedFile](#uploadedfile)
-### Request
+# Factory
+
+## RequestFactory 
 ```php
 $request = (new RequestFactory)->createRequest('GET', 'http://example.com');
 ```
 
-### ServerRequest
-
-#### Create Server Request
-```php
-$request = (new RequestFactory)->createServerRequest('GET', 'http://example.com');
-```
-
-#### Create Server Request from Server
-```php
-$request = (new RequestFactory)->createServerRequestFromServer();
-```
-
-### Response
+## ResponseFactory 
 ```php
 $response = (new ResponseFactory)->createResponse(200);
 ```
 
-### Stream
-
-#### Create Stream from a string
+## ServerRequestFactory  
 ```php
+// create a new server-side request
+$request = (new ServerRequestFactory)->createServerRequest('GET', 'http://example.com');
+
+// create a new server-side request from server
+$request = (new ServerRequestFactory)->createServerRequestFromServer();
+```
+
+## StreamFactory  
+```php
+// create a new stream from a string
 $stream = (new StreamFactory)->createStream('Hello World!');
-echo $stream; // Hello World!
-```
 
-#### Create Stream from a file
-```php
-$stream = (new StreamFactory)->createStreamFromFile('/path/file', 'w+');
-$stream->write('Hello World!');
-echo $stream; // Hello World!
-```
+// create a stream from an existing file
+$stream = (new StreamFactory)->createStreamFromFile('/path/file');
 
-#### Create Stream from a resource
-```php
+// create a new stream from an existing resource
 $resource = fopen('php://temp', 'w+');
 $stream = (new StreamFactory)->createStreamFromResource($resource);
-$stream->write('Hello World!');
-echo $stream; // Hello World!
 ```
 
-### Uri
+## UploadedFileFactory   
+```php
+// create a new uploaded file
+$file = (new StreamFactory)->createStreamFromFile('/path/file');
+$upload = (new UploadedFileFactory)->createUploadedFile($file);
 
-### UploadedFile
+// create a new uploaded file from server
+$upload = (new UploadedFileFactory)->createUploadedFileFromServer($_FILES);
+```
+
+## UriFactory
+```php
+// create new uri from string
+$uri = (new UriFactory)->createUri('http://example.com');
+
+// create new uri from server
+$uri = (new UriFactory)->createUriFromServer($_SERVER);
+```
