@@ -57,7 +57,7 @@
         ];
         
         /**
-         * Creates a new Stream.
+         * Create a new Stream.
          *
          * @param resource $stream 
          * @throws InvalidArgumentException
@@ -69,6 +69,7 @@
             } else {
 
                 $this->stream   = $stream;
+                $this->size     = null;
                 $this->metadata = stream_get_meta_data($stream);
                 $this->seekable = $this->metadata['seekable'];
                 $this->readable = in_array($this->metadata['mode'], self::$modes['readable']);
@@ -78,16 +79,13 @@
         }
         
         /**
-         * Reads all data from the stream into a string, from the beginning to end.
+         * Reads all data from the stream into a string, 
+         * from the beginning to end.
          * 
          * @return string
          */
         public function __toString()
         {
-            if (is_resource($this->stream) === false) {
-                return '';
-            }
-
             try {
                 $this->rewind();
                 return $this->getContents();
@@ -98,12 +96,12 @@
         
         /**
          * Closes the stream and any underlying resources.
+         * 
+         * @return resource|null
          */
         public function close()
         {
-            if (is_resource($this->stream) === true) {
-                fclose($this->stream);
-            }
+            fclose($this->stream);
             $this->detach();
         }
         
@@ -125,18 +123,16 @@
         }
         
         /**
-         * Gets the size of the stream if known.
+         * Get the size of the stream if known.
          *
          * @link http://php.net/manual/en/function.fstat.php
          * @return int|null
          */
         public function getSize()
         {
-            if (!$this->size && is_resource($this->stream) === true) {
-                
+            if (!$this->size) {
                 $stats = fstat($this->stream);
                 $this->size = isset($stats['size']) ? $stats['size'] : null;
-            
             }
             return $this->size;
         }
@@ -151,7 +147,7 @@
         public function tell()
         {
             $position = ftell($this->stream);
-            if (is_resource($this->stream) === false || $position === false) {
+            if ($position === false) {
                 throw new RuntimeException('Unable to determine stream position');
             }
             return $position;
@@ -165,7 +161,7 @@
          */
         public function eof()
         {
-            return (is_resource($this->stream) === true) ? feof($this->stream) : true;
+            return feof($this->stream);
         }
         
         /**
@@ -184,9 +180,10 @@
          * @link http://www.php.net/manual/en/function.fseek.php
          * @param int $offset
          * @param int $whence
+         * @return void
          * @throws RuntimeException
          */
-        public function seek($offset, $whence = SEEK_SET)
+        public function seek($offset, $whence = \SEEK_SET)
         {
             if (!$this->isSeekable() || fseek($this->stream, $offset, $whence) === -1) {
                 throw new RuntimeException('Could not seek in stream');
@@ -199,6 +196,7 @@
          * If the stream is not seekable, this method will raise an exception;
          * otherwise, it will perform a seek(0).
          * 
+         * @return void
          * @throws RuntimeException
          */
         public function rewind()
@@ -217,7 +215,7 @@
         }
         
         /**
-         * Writes data to the stream.
+         * Write data to the stream.
          *
          * @param string $string
          * @return int
@@ -245,7 +243,7 @@
         }
         
         /**
-         * Reads data from the stream.
+         * Read data from the stream.
          *
          * @link http://php.net/manual/en/function.fread.php
          * @param int $length
@@ -262,7 +260,7 @@
         }
         
         /**
-         * Returns the remaining contents in a string.
+         * Return the remaining contents in a string.
          * 
          * @link http://php.net/manual/en/function.stream-get-contents.php
          * @return string
@@ -278,7 +276,7 @@
         }
         
         /**
-         * Gets stream metadata as an associative array or retrieve a specific key.
+         * Get stream metadata as an associative array or retrieve a specific key.
          *
          * The keys returned are identical to the keys returned from PHP's
          * stream_get_meta_data() function.
