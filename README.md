@@ -2,28 +2,28 @@
 A PSR-7 and PSR-17 implementation for HTTP messages and factory. 
 An HTTP message is either a request from a client to a server or a response from a server to a client. An HTTP factory is a method by which a new HTTP object, as defined by PSR-7, is created. 
 
-# Requirements
+## Requirements
 * PHP >= 7.1
 
-# Installation
+## Installation
 Using Composer:
 ```
 $ composer require davidecesarano/embryo-http
 ```
 
-# Factory
+## Factory
 
-## RequestFactory 
+### RequestFactory 
 ```php
 $request = (new RequestFactory)->createRequest('GET', 'http://example.com');
 ```
 
-## ResponseFactory 
+### ResponseFactory 
 ```php
 $response = (new ResponseFactory)->createResponse(200);
 ```
 
-## ServerRequestFactory  
+### ServerRequestFactory  
 ```php
 // create a new server-side request
 $request = (new ServerRequestFactory)->createServerRequest('GET', 'http://example.com');
@@ -32,7 +32,7 @@ $request = (new ServerRequestFactory)->createServerRequest('GET', 'http://exampl
 $request = (new ServerRequestFactory)->createServerRequestFromServer();
 ```
 
-## StreamFactory  
+### StreamFactory  
 ```php
 // create a new stream from a string
 $stream = (new StreamFactory)->createStream('Hello World!');
@@ -45,7 +45,7 @@ $resource = fopen('php://temp', 'w+');
 $stream = (new StreamFactory)->createStreamFromResource($resource);
 ```
 
-## UploadedFileFactory   
+### UploadedFileFactory   
 ```php
 // create a new uploaded file
 $file = (new StreamFactory)->createStreamFromFile('/path/file');
@@ -55,7 +55,7 @@ $upload = (new UploadedFileFactory)->createUploadedFile($file);
 $upload = (new UploadedFileFactory)->createUploadedFileFromServer($_FILES);
 ```
 
-## UriFactory
+### UriFactory
 ```php
 // create new uri from string
 $uri = (new UriFactory)->createUri('http://example.com');
