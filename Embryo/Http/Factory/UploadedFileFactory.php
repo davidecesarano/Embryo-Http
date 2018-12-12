@@ -71,7 +71,12 @@
                 $normalized[$key] = [];
                 if (!is_array($value['error'])) {
 
-                    $stream = (new StreamFactory)->createStreamFromFile($value['tmp_name'], 'r');
+                    if ($value['error'] === 4) {
+                        $stream = (new StreamFactory)->createStream('');
+                    } else {
+                        $stream = (new StreamFactory)->createStreamFromFile($value['tmp_name'], 'r');    
+                    }
+                    
                     $normalized[$key] = $this->createUploadedFile(
                         $stream,
                         $value['size'],
