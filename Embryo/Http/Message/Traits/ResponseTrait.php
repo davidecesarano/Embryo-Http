@@ -137,4 +137,50 @@
             $this->getBody()->write($data);
             return $this;
         }
+
+        /**
+         * Prepares the response object to return an HTTP redirect
+         * response to the client.
+         *
+         * @param string|UriInterface $url
+         * @param int|null $status
+         * @return static
+         */
+        public function withRedirect($url, $status = null)
+        {
+            $response = $this->withHeader('Location', (string)$url);
+            if (is_null($status) && $this->getStatusCode() === 200) {
+                $status = 302;
+            }
+            if (!is_null($status)) {
+                return $response->withStatus($status);
+            }
+            return $response;
+        }
+
+        /**
+         * Prepares the response object to return an HTTP json
+         * response to the client.
+         *
+         * @param mixed $data
+         * @param int $status
+         * @param int $options
+         * @return static
+         * @throws RuntimeException
+         */
+        public function withJson($data, int $status = null, int $options = 0)
+        {
+            $json = json_encode($data, $options);
+            if ($json === false) {
+                throw new \RuntimeException(json_last_error_msg(), json_last_error());
+            }
+            
+            $response = $this->write($json);
+            $response = $response->withHeader('Content-Type', 'application/json;charset=utf-8');
+            
+            if (isset($status)) {
+                return $response->withStatus($status);
+            }
+            return $response;
+        }
     }
