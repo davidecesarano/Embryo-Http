@@ -22,6 +22,9 @@
         "psr/http-message": "1.0.1",
         "psr/http-factory": "1.0.0"
     },
+    "require-dev": {
+        "davidecesarano/embryo-emitter": "dev-master"
+    },
     "autoload": {
         "psr-4": {
             "Embryo\\": "Embryo/"
