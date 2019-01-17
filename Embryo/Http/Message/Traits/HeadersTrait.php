@@ -13,6 +13,18 @@
     
     trait HeadersTrait
     { 
+        /**
+         * @var array $special
+         */
+        private $special = [
+            'CONTENT_TYPE',
+            'CONTENT_LENGTH',
+            'PHP_AUTH_USER',
+            'PHP_AUTH_PW',
+            'PHP_AUTH_DIGEST',
+            'AUTH_TYPE'
+        ];
+
         /** 
          * Sets HTTP headers from $_SERVER. 
          *
@@ -23,8 +35,7 @@
         {
             $headers = [];
             foreach ($server as $key => $value) {
-                
-                if(substr($key, 0, 5) == 'HTTP_') {
+                if(in_array($key, $this->special) || substr($key, 0, 5) == 'HTTP_') {
                     
                     $name = $this->setHeaderName($key);
                     $headers[$name] =  [
@@ -32,7 +43,6 @@
                         'values'   => [$value]
                     ];
                 }
-
             }
             return $headers;
         }
