@@ -108,17 +108,30 @@
                 throw new \InvalidArgumentException('Target path must be a non empty string');
             }
 
-            if (!is_writable(dirname($targetPath))) {
-                throw new \InvalidArgumentException('Target path is not writable');
-            }
-
             $stream = $this->getStream();
             $file   = $stream->getMetadata('uri');
-            if (!copy($file, $targetPath.$this->clientFilename)) {
+
+            if (is_dir($targetPath)) {
+                
+                if (!is_writable($targetPath)) {
+                    throw new \InvalidArgumentException('Target path is not writable');
+                }
+                $target = rtrim($targetPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->clientFilename;
+                
+            } else {
+                
+                if (!is_writable(dirname($targetPath))) {
+                    throw new \InvalidArgumentException('Target path is not writable');
+                }
+                $target = $targetPath;
+
+            }
+            
+            if (!copy($file, $target)) {
                 throw new \RuntimeException(sprintf('Error coping uploaded file %1s to %2s', $this->clientFilename, $targetPath));
             }
+        
             $this->moved = true;
-
             if (!$this->moved) {
                 throw new \RuntimeException(sprintf('Uploaded file could not be moved to %s', $targetPath));
             }
