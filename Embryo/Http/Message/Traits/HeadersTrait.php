@@ -34,6 +34,18 @@
         protected function setHeaders(array $server)
         {
             $headers = [];
+
+            if (!isset($server['authorization'])) {
+                $allHeaders = array_change_key_case(getallheaders(), CASE_LOWER);
+                if (isset($allHeaders['authorization'])) {
+                    $name = $this->setHeaderName('HTTP_AUTHORIZATION');
+                    $headers[$name] =  [
+                        'original' => 'HTTP_AUTHORIZATION', 
+                        'values'   => [$allHeaders['authorization']]
+                    ];
+                }
+            }
+            
             foreach ($server as $key => $value) {
                 if(in_array($key, $this->special) || substr($key, 0, 5) == 'HTTP_') {
                     
