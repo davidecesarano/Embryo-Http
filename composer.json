@@ -29,5 +29,7 @@
         "psr-4": {
             "Embryo\\": "Embryo/"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
