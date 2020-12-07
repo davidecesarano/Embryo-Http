@@ -12,14 +12,13 @@
 
     namespace Embryo\Http\Message;
     
-    use InvalidArgumentException;
     use Embryo\Http\Message\Message;
-    use Embryo\Http\Message\Traits\RequestTrait;
-    use Embryo\Http\Factory\{StreamFactory, UriFactory};
+    use Embryo\Http\Message\Traits\{RequestTrait, BodyTrait};
     use Psr\Http\Message\{RequestInterface, StreamInterface, UriInterface};
     
     class Request extends Message implements RequestInterface 
     {
+        use BodyTrait;
         use RequestTrait;
 
         /**
@@ -28,7 +27,7 @@
         protected $method;
         
         /**
-         * @var string|UriInterface $uri
+         * @var UriInterface $uri
          */
         protected $uri;
         
@@ -46,17 +45,15 @@
          * @param string $method
          * @param string|UriInterface $uri
          * @param array $headers
-         * @param StreamInterface|null $body
+         * @param StreamInterface|string|null $body
          */
-        public function __construct($method, $uri, array $headers = [], StreamInterface $body = null)
+        public function __construct(string $method, $uri, array $headers = [], $body = null)
         {
-            $this->method        = $this->filterMethod($method);
-            $this->uri           = is_string($uri) ? (new UriFactory)->createUri($uri) : $uri;
-            $this->headers       = $this->setHeaders($headers);                
-            $this->body          = $body ? $body : (new StreamFactory)->createStream('');
+            $this->method = $this->filterMethod($method);
+            $this->uri = $this->setUri($uri);
+            $this->headers = $this->setHeaders($headers);                
+            $this->body = $this->setBody($body);
             $this->requestTarget = $this->setRequestTarget($this->uri->getPath(), $this->uri->getQuery());
-
-            // Http Host header
             $this->headers['host'] = $this->setNotPreserveHost($this->uri->getHost());
         }
         
@@ -113,7 +110,6 @@
          *
          * @param string $method 
          * @return static 
-         * @throws InvalidArgumentException
          */
         public function withMethod($method)
         {
@@ -157,10 +153,8 @@
             if (!$preserveHost) {
                 $clone->headers['host'] = $this->setNotPreserveHost($host);
             } else {
-
                 $headerHost = $this->getHeaderLine('Host');
                 $clone->headers['host'] = $this->setPreserveHost($headerHost, $host);
-
             }
             return $clone;
         }

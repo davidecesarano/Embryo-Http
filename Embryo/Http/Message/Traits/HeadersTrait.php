@@ -29,7 +29,7 @@
          * Sets HTTP headers from $_SERVER. 
          *
          * @param array $server 
-         * @return self
+         * @return array
          */
         protected function setHeaders(array $server)
         {
@@ -48,7 +48,6 @@
             
             foreach ($server as $key => $value) {
                 if(in_array($key, $this->special) || substr($key, 0, 5) == 'HTTP_') {
-                    
                     $name = $this->setHeaderName($key);
                     $headers[$name] =  [
                         'original' => $key, 
@@ -79,7 +78,7 @@
          * 
          * @param string $headerHost
          * @param string $host 
-         * return string[][]
+         * @return array
          */
         protected function setPreserveHost(string $headerHost, string $host)
         {
@@ -97,7 +96,7 @@
          * Sets Host header if preserve host is false.
          * 
          * @param string $host 
-         * @return string[][]
+         * @return array
          */
         protected function setNotPreserveHost(string $host)
         {

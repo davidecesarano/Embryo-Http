@@ -22,10 +22,13 @@
          *
          * @param string $content
          * @return StreamInterface
+         * @throws \RuntimeException
          */
         public function createStream(string $content = ''): StreamInterface
         {
-            $resource = fopen('php://temp', 'r+');
+            if (!$resource = fopen('php://temp', 'r+')) {
+                throw new \RuntimeException('Unable to open file');
+            }
             $stream = $this->createStreamFromResource($resource);
             $stream->write($content);
             return $stream;
@@ -37,10 +40,13 @@
          * @param string $filename
          * @param string $mode
          * @return StreamInterface
+         * @throws \RuntimeException
          */
         public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
         {
-            $resource = fopen($filename, $mode);
+            if (!$resource = fopen($filename, $mode)) {
+                throw new \RuntimeException('Unable to open file');
+            }
             return $this->createStreamFromResource($resource);
         }
 

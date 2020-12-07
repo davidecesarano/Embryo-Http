@@ -33,7 +33,7 @@
          * @param string|null $clientFilename
          * @param string|null $clientMediaType
          * @return UploadedFileInterface
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          */
         public function createUploadedFile(
             StreamInterface $file, 

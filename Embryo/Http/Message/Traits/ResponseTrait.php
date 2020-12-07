@@ -11,6 +11,8 @@
      */
 
     namespace Embryo\Http\Message\Traits;
+
+    use Psr\Http\Message\UriInterface;
     
     trait ResponseTrait 
     {
@@ -98,7 +100,7 @@
          * 
          * @param int $status 
          * @return int
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          */
         protected function filterStatus(int $status)
         {
@@ -115,7 +117,6 @@
          * @param int $status
          * @param string $reasonPhrase
          * @return string
-         * @throws InvalidArgumentException
          */
         protected function filterReasonPhrase(int $status, string $reasonPhrase = '')
         {
@@ -132,7 +133,7 @@
          * @param string $data 
          * @return self
          */
-        public function write($data)
+        public function write(string $data)
         {
             $this->getBody()->write($data);
             return $this;
@@ -146,9 +147,9 @@
          * @param int|null $status
          * @return static
          */
-        public function withRedirect($url, $status = null)
+        public function withRedirect($url, int $status = null)
         {
-            $response = $this->withHeader('Location', (string)$url);
+            $response = $this->withHeader('Location', (string) $url);
             if (is_null($status) && $this->getStatusCode() === 200) {
                 $status = 302;
             }
@@ -163,10 +164,10 @@
          * response to the client.
          *
          * @param mixed $data
-         * @param int $status
+         * @param int|null $status
          * @param int $options
          * @return static
-         * @throws RuntimeException
+         * @throws \RuntimeException
          */
         public function withJson($data, int $status = null, int $options = 0)
         {
@@ -175,7 +176,9 @@
                 throw new \RuntimeException(json_last_error_msg(), json_last_error());
             }
             
-            $response = $this->write($json);
+            $body = $this->getBody();
+            $body->write($json);
+            $response = $this->withBody($body);
             $response = $response->withHeader('Content-Type', 'application/json;charset=utf-8');
             
             if (isset($status)) {

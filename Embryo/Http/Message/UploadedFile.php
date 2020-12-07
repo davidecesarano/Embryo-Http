@@ -18,12 +18,12 @@
     class UploadedFile implements UploadedFileInterface
     {
         /**
-         * @var resource|string $file
+         * @var StreamInterface $file
          */
         private $file;
 
         /**
-         * @var int $size
+         * @var int|null $size
          */
         private $size;
 
@@ -79,7 +79,7 @@
          * uploaded file.
          *
          * @return StreamInterface
-         * @throws RuntimeException
+         * @throws \RuntimeException
          */
         public function getStream(): StreamInterface
         {
@@ -95,8 +95,9 @@
          * @see http://php.net/is_uploaded_file
          * @see http://php.net/move_uploaded_file
          * @param string $targetPath
-         * @throws InvalidArgumentException
-         * @throws RuntimeException
+         * @return void
+         * @throws \InvalidArgumentException
+         * @throws \RuntimeException
          */
         public function moveTo($targetPath)
         {
@@ -132,7 +133,7 @@
             }
         
             $this->moved = true;
-            if (!$this->moved) {
+            if ($this->moved == false) {
                 throw new \RuntimeException(sprintf('Uploaded file could not be moved to %s', $targetPath));
             }
         }

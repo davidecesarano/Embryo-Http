@@ -14,7 +14,6 @@
     namespace Embryo\Http\Message;
 
     use Embryo\Http\Message\Traits\HeadersTrait;
-    use InvalidArgumentException;
     use Psr\Http\Message\{MessageInterface, StreamInterface};
 
     class Message implements MessageInterface 
@@ -145,16 +144,16 @@
          * @param string $name
          * @param string|string[] $value
          * @return static
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          */
         public function withHeader($name, $value)
         {
             if (!is_string($name)) {
-                throw new InvalidArgumentException('Header name must be a string');
+                throw new \InvalidArgumentException('Header name must be a string');
             }
 
             if (!is_string($value) && !is_array($value)) {
-                throw new InvalidArgumentException('Header value must be a string or array');
+                throw new \InvalidArgumentException('Header value must be a string or array');
             }
 
             $original = $name;
@@ -179,16 +178,16 @@
          * @param string $name 
          * @param string|string[] $value 
          * @return static 
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          */
         public function withAddedHeader($name, $value)
         {
             if (!is_string($name)) {
-                throw new InvalidArgumentException('Header name must be a string');
+                throw new \InvalidArgumentException('Header name must be a string');
             }
 
             if (!is_string($value) && !is_array($value)) {
-                throw new InvalidArgumentException('Header value must be a string or array');
+                throw new \InvalidArgumentException('Header value must be a string or array');
             }
 
             $original = $name;

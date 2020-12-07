@@ -54,7 +54,7 @@
          * @param string|UriInterface $uri 
          * @param array $server
          */
-        public function __construct($method, $uri, array $server = [])
+        public function __construct(string $method, $uri, array $server = [])
         {
             $this->serverParams = $server;
             parent::__construct($method, $uri, $server);
@@ -176,7 +176,6 @@
          *
          * @param array $uploadedFiles
          * @return static
-         * @throws InvalidArgumentException
          */
         public function withUploadedFiles(array $uploadedFiles)
         {
@@ -206,12 +205,12 @@
          * 
          * @param null|array|object $data
          * @return static
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          */
         public function withParsedBody($data)
         {
-            if (!is_array($data) && !is_object($data) && null !== $data) {
-                throw new InvalidArgumentException('The withParsedBody parameter must be an array, an object, or a null');
+            if (!is_array($data) && !is_object($data) && !is_null($data)) {
+                throw new \InvalidArgumentException('The withParsedBody parameter must be an array, an object, or a null');
             }
 
             $clone = clone $this;

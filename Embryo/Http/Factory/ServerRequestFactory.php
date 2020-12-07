@@ -14,7 +14,7 @@
 
     use Embryo\Http\Message\ServerRequest;
     use Embryo\Http\Factory\{UploadedFileFactory, UriFactory};
-    use Psr\Http\Message\{ServerRequestFactoryInterface, ServerRequestInterface};
+    use Psr\Http\Message\{ServerRequestFactoryInterface, ServerRequestInterface, UriInterface};
 
     class ServerRequestFactory implements ServerRequestFactoryInterface
     {

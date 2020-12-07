@@ -17,7 +17,7 @@
          * Validates Uri scheme.
          * 
          * @param string $scheme
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          * @return string
          */
         protected function filterScheme(string $scheme)
@@ -36,19 +36,17 @@
          * @param string $host
          * @return string
          */
-        protected function removePortFromHost($host)
+        protected function removePortFromHost(string $host)
         {
-            if (!is_string($host)) {
-                throw new \InvalidArgumentException('Uri host must be a string');
-            }
-            return preg_replace('#:(\d+){2,4}#', '', $host);
+            $remove = preg_replace('#:(\d+){2,4}#', '', $host);
+            return !is_null($remove) ? $remove : '';
         }
 
         /**
          * Validates Uri port.
          * 
          * @param null|int $port
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          * @return null|int
          */
         protected function filterPort($port)

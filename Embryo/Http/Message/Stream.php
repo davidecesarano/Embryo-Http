@@ -12,14 +12,12 @@
 
     namespace Embryo\Http\Message;
 
-    use InvalidArgumentException;
-    use RuntimeException;
     use Psr\Http\Message\StreamInterface;
     
     class Stream implements StreamInterface 
     {        
         /**
-         * @var resource $strem
+         * @var resource|null $stream
          */
         private $stream;
         
@@ -29,7 +27,7 @@
         private $size;
         
         /**
-         * @var array $metadata
+         * @var array|null $metadata
          */
         private $metadata;
         
@@ -60,12 +58,12 @@
          * Create a new Stream.
          *
          * @param resource $stream 
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          */
         public function __construct($stream)
         {
             if (is_resource($stream) === false) {
-                throw new InvalidArgumentException('Stream must be a resource');
+                throw new \InvalidArgumentException('Stream must be a resource');
             } else {
 
                 $this->stream   = $stream;
@@ -89,7 +87,7 @@
             try {
                 $this->rewind();
                 return $this->getContents();
-            } catch (RuntimeException $e) {
+            } catch (\RuntimeException $e) {
                 return '';
             }
         }
@@ -97,12 +95,14 @@
         /**
          * Closes the stream and any underlying resources.
          * 
-         * @return resource|null
+         * @return void
          */
         public function close()
         {
-            fclose($this->stream);
-            $this->detach();
+            if (isset($this->stream) && is_resource($this->stream)) {
+                fclose($this->stream);
+                $this->detach();
+            }
         }
         
         /**
@@ -130,9 +130,13 @@
          */
         public function getSize()
         {
+            if (!isset($this->stream)) {
+                return null;
+            }
+            
             if (!$this->size) {
                 $stats = fstat($this->stream);
-                $this->size = isset($stats['size']) ? $stats['size'] : null;
+                $this->size = $stats && isset($stats[7]) ? $stats[7] : null;
             }
             return $this->size;
         }
@@ -142,13 +146,17 @@
          *
          * @link http://php.net/manual/en/function.ftell.php
          * @return int
-         * @throws RuntimeException 
+         * @throws \RuntimeException 
          */
         public function tell()
         {
+            if (!isset($this->stream)) {
+                throw new \RuntimeException('Unable to determine stream position');
+            }
+
             $position = ftell($this->stream);
             if ($position === false) {
-                throw new RuntimeException('Unable to determine stream position');
+                throw new \RuntimeException('Unable to determine stream position');
             }
             return $position;
         }
@@ -161,7 +169,7 @@
          */
         public function eof()
         {
-            return feof($this->stream);
+            return !$this->stream || feof($this->stream);
         }
         
         /**
@@ -181,12 +189,12 @@
          * @param int $offset
          * @param int $whence
          * @return void
-         * @throws RuntimeException
+         * @throws \RuntimeException
          */
         public function seek($offset, $whence = \SEEK_SET)
         {
-            if (!$this->isSeekable() || fseek($this->stream, $offset, $whence) === -1) {
-                throw new RuntimeException('Could not seek in stream');
+            if (!$this->stream || !$this->isSeekable() || fseek($this->stream, $offset, $whence) === -1) {
+                throw new \RuntimeException('Could not seek in stream');
             }
         }
         
@@ -197,7 +205,7 @@
          * otherwise, it will perform a seek(0).
          * 
          * @return void
-         * @throws RuntimeException
+         * @throws \RuntimeException
          */
         public function rewind()
         {
@@ -219,13 +227,17 @@
          *
          * @param string $string
          * @return int
-         * @throws RuntimeException
+         * @throws \RuntimeException
          */
         public function write($string)
         {   
+            if (!$this->stream) {
+                throw new \RuntimeException('Cannot write to a non-writable stream');
+            }
+
             $written = fwrite($this->stream, $string);
             if (!$this->isWritable() || $written === false) {
-                throw new RuntimeException('Cannot write to a non-writable stream');
+                throw new \RuntimeException('Cannot write to a non-writable stream');
             }
             
             $this->size = null;
@@ -248,13 +260,17 @@
          * @link http://php.net/manual/en/function.fread.php
          * @param int $length
          * @return string 
-         * @throws RuntimeException
+         * @throws \RuntimeException
          */
         public function read($length)
         {
+            if (!$this->stream) {
+                throw new \RuntimeException('Cannot read from non-readable stream');
+            }
+
             $string = fread($this->stream, $length);
             if (!$this->isReadable() || $string  === false) {
-                throw new RuntimeException('Cannot read from non-readable stream');
+                throw new \RuntimeException('Cannot read from non-readable stream');
             }
             return $string;
         }
@@ -264,13 +280,17 @@
          * 
          * @link http://php.net/manual/en/function.stream-get-contents.php
          * @return string
-         * @throws RuntimeException
+         * @throws \RuntimeException
          */
         public function getContents()
         {
+            if (!$this->stream) {
+                throw new \RuntimeException('Unable to read stream contents');
+            }
+
             $contents = stream_get_contents($this->stream);
             if (!$this->isReadable() || $contents === false) {
-                throw new RuntimeException('Unable to read stream contents');
+                throw new \RuntimeException('Unable to read stream contents');
             }
             return $contents;
         }

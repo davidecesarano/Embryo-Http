@@ -14,7 +14,7 @@
     
     use Embryo\Http\Message\Request;
     use Embryo\Http\Factory\UriFactory;
-    use Psr\Http\Message\{RequestFactoryInterface, RequestInterface};
+    use Psr\Http\Message\{RequestFactoryInterface, RequestInterface, UriInterface};
     
     class RequestFactory implements RequestFactoryInterface
     {

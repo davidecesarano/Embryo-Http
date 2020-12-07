@@ -22,7 +22,6 @@
          *
          * @param string $uri
          * @return UriInterface
-         * @throws InvalidArgumentException
          */
         public function createUri(string $uri = ''): UriInterface
         {
@@ -34,10 +33,10 @@
          * 
          * @param array $server 
          * @return UriInterface
+         * @throws \RuntimeException
          */
         public function createUriFromServer(array $server): UriInterface
         {
-            // scheme, host, post, user, pass
             $scheme = (empty($server['HTTPS']) || $server['HTTPS'] === 'off') ? 'http' : 'https';
             $host   = (isset($server['HTTP_HOST'])) ? $server['HTTP_HOST'] : $server['SERVER_NAME'];
             $port   = (isset($server['SERVER_PORT'])) ? (int) $server['SERVER_PORT'] : 80;
@@ -46,6 +45,9 @@
             
             // path
             $path = parse_url('http://example.com' . $server['REQUEST_URI'], PHP_URL_PATH);
+            if (!$path) {
+                throw new \RuntimeException('Request URI is malformed');
+            }
             $path = rawurldecode($path);
 
             // query

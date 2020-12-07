@@ -26,12 +26,12 @@
         protected $scheme;
         
         /**
-         * @param string $user 
+         * @var string $user 
          */
         protected $user;
         
         /**
-         * @param string $pass
+         * @var string|null $pass
          */
         protected $pass;
         
@@ -41,22 +41,22 @@
         protected $host;
         
         /**
-         * @var int $port 
+         * @var int|null $port 
          */
         protected $port;
         
         /**
-         * @param string $path 
+         * @var string $path 
          */
         protected $path;
         
         /**
-         * @param string $query
+         * @var string $query
          */
         protected $query;
         
         /**
-         * @param string $fragment
+         * @var string $fragment
          */
         protected $fragment;
         
@@ -72,12 +72,14 @@
                 throw new InvalidArgumentException('Uri must be a string');
             }
 
-            $parts          = parse_url($uri);
+            /** @var string[] */
+            $parts = parse_url($uri) ? parse_url($uri) : [];
+
             $this->scheme   = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
             $this->user     = isset($parts['user']) ? $parts['user'] : '';
             $this->pass     = isset($parts['pass']) ? $parts['pass'] : '';
             $this->host     = isset($parts['host']) ? $this->removePortFromHost($parts['host']) : '';
-            $this->port     = isset($parts['port']) ? $this->filterPort($parts['port']) : null;
+            $this->port     = isset($parts['port']) ? $this->filterPort(intval($parts['port'])) : null;
             $this->path     = isset($parts['path']) ? $parts['path'] : '/';
             $this->query    = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
             $this->fragment = isset($parts['fragment']) ? $parts['fragment'] : '';

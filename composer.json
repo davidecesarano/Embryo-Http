@@ -23,7 +23,7 @@
         "psr/http-factory": "1.0.0"
     },
     "require-dev": {
-        "davidecesarano/embryo-emitter": "dev-master"
+        "phpstan/phpstan": "^0.12.47"
     },
     "autoload": {
         "psr-4": {

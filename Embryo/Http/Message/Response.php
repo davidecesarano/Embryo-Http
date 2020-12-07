@@ -14,11 +14,12 @@
     
     use Embryo\Http\Factory\StreamFactory;
     use Embryo\Http\Message\{Headers, Message};
-    use Embryo\Http\Message\Traits\ResponseTrait;
+    use Embryo\Http\Message\Traits\{BodyTrait, ResponseTrait};
     use Psr\Http\Message\{ResponseInterface, StreamInterface};
     
     class Response extends Message implements ResponseInterface 
     {
+        use BodyTrait;
         use ResponseTrait;
         
         /**
@@ -34,16 +35,16 @@
         /**
          * Creates new HTTP response.
          * 
-         * @param int $code 
+         * @param int $status 
          * @param string $reasonPhrase
          * @param array $headers 
-         * @param StreamInterface|null $body
+         * @param StreamInterface|string|null $body
          */
-        public function __construct(int $status = 200, string $reasonPhrase = '', array $headers = [], StreamInterface $body = null)
+        public function __construct(int $status = 200, string $reasonPhrase = '', array $headers = [], $body = null)
         {
-            $this->status       = $this->filterStatus($status);
-            $this->headers      = $this->setHeaders($headers);
-            $this->body         = $body ? $body : (new StreamFactory)->createStream('');
+            $this->status = $this->filterStatus($status);
+            $this->headers = $this->setHeaders($headers);
+            $this->body = $this->setBody($body);
             $this->reasonPhrase = $this->filterReasonPhrase($status, $reasonPhrase);
         }
         
@@ -63,7 +64,7 @@
          * @param int $status 
          * @param string $reasonPhrase
          * @return static
-         * @throws InvalidArgumentException
+         * @throws \InvalidArgumentException
          */
         public function withStatus($status, $reasonPhrase = '')
         {
@@ -83,15 +84,6 @@
          */
         public function getReasonPhrase()
         {   
-            if ($this->reasonPhrase !== '') {
-                return $this->reasonPhrase;
-            } else {
-                
-                if (isset($this->messages[$this->status])) {
-                    return $this->messages[$this->status];
-                }
-
-            }
-            return '';
+            return $this->reasonPhrase;
         }
     }
