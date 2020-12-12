@@ -13,7 +13,7 @@
     namespace Embryo\Http\Factory;
 
     use Embryo\Http\Message\ServerRequest;
-    use Embryo\Http\Factory\{UploadedFileFactory, UriFactory};
+    use Embryo\Http\Factory\{StreamFactory, UploadedFileFactory, UriFactory};
     use Psr\Http\Message\{ServerRequestFactoryInterface, ServerRequestInterface, UriInterface};
 
     class ServerRequestFactory implements ServerRequestFactoryInterface
@@ -47,6 +47,22 @@
             $request = $request->withParsedBody($_POST);
             $request = $request->withCookieParams($_COOKIE);
             $request = $request->withUploadedFiles($files);
+
+            $contentType = $request->getHeaderLine('Content-Type');
+            if ($contentType !== '' && strpos($contentType, 'application/json') !== false) {
+
+                $streamWrite = fopen('php://temp', 'w+');
+                $streamRead = fopen('php://input', 'r');
+                if ($streamWrite && $streamRead) {
+                    stream_copy_to_stream($streamRead, $streamWrite);
+                    rewind($streamWrite);
+                    $body    = (new StreamFactory)->createStreamFromResource($streamWrite);
+                    $params  = json_decode($body->getContents(), true);
+                    $request = $request->withBody($body)->withParsedBody($params);
+                }
+                return $request;
+
+            }
             return $request;
         }
     }
